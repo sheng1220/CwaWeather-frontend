@@ -58,16 +58,29 @@
             z-index: 100;
         }
 
-        .location-pill {
+        .location-selector-wrapper {
+            display: flex;
+            align-items: center;
             background: var(--ac-yellow);
-            color: var(--ac-brown);
-            padding: 5px 15px;
             border-radius: 20px;
-            font-weight: 900;
-            font-size: 1.1rem;
             transform: rotate(-2deg);
             border: 2px solid white;
             box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+            padding: 5px 5px 5px 15px;
+        }
+
+        #citySelector {
+            background: transparent;
+            border: none;
+            color: var(--ac-brown);
+            font-weight: 900;
+            font-size: 1.1rem;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            padding-right: 10px; /* for arrow */
         }
 
         .update-pill {
@@ -264,7 +277,10 @@
         <p style="color: white; font-weight: bold; margin-top: 20px;">正在觀測雲的流動...</p>
     </div>
     <div class="status-bar">
-        <div class="location-pill">📍 苗栗</div>
+        <div class="location-selector-wrapper">
+            <span>📍</span>
+            <select id="citySelector"></select>
+        </div>
         <div id="updateTime" class="update-pill">更新中...</div>
     </div>
 
@@ -280,7 +296,8 @@
     </div>
 
     <script>
-        const API_URL = "https://weather-miaoli-ryan.zeabur.app/api/weather/miaoli";
+        const API_BASE_URL = "https://weather-miaoli-ryan.zeabur.app/api";
+        let currentCity = "苗栗縣"; // 預設城市
 
         function getWeatherIcon(weather) {
             if (!weather) return "🌤️";
@@ -392,15 +409,18 @@
             document.getElementById('updateTime').textContent = `${month}月${date}日 ${days[dayIndex]}`;
         }
 
-        async function fetchWeather() {
+        async function fetchWeather(city) {
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+
             try {
                 // 1. 定義「最低等待時間」：1500 毫秒 (1.5秒)
                 const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
 
                 // 2. 定義「抓取資料」的工作
-                const fetchPromise = fetch(API_URL).then(res => res.json());
+                const fetchPromise = fetch(`${API_BASE_URL}/weather/${city}`).then(res => res.json());
 
-                // 3. Promise.all 會等待「兩個都完成」才會往下走
+                // 3. Promise.all 會等待「兩個都完成」才會往下走，避免閃爍
                 // result 陣列裡，第一個是 delay 的結果(沒用到)，第二個是 api 的 json 資料
                 const [_, json] = await Promise.all([delayPromise, fetchPromise]);
 
@@ -419,7 +439,50 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", fetchWeather);
+        async function initializeApp() {
+            const citySelector = document.getElementById('citySelector');
+
+            // 台灣縣市地理排序 (北->南, 西->東)
+            const cityOrder = [
+                "基隆市", "臺北市", "新北市", "桃園市", "新竹市", "新竹縣", "苗栗縣",
+                "臺中市", "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "臺南市",
+                "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"
+            ];
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/cities`);
+                const json = await response.json();
+
+                if (json.success) {
+                    const cities = json.data;
+                    // 根據地理位置排序
+                    cities.sort((a, b) => cityOrder.indexOf(a) - cityOrder.indexOf(b));
+
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city;
+                        option.textContent = city;
+                        if (city === currentCity) {
+                            option.selected = true;
+                        }
+                        citySelector.appendChild(option);
+                    });
+                }
+            } catch (e) {
+                console.error("無法載入城市列表", e);
+                alert("無法載入城市列表，請稍後再試！");
+            }
+
+            citySelector.addEventListener('change', (e) => {
+                currentCity = e.target.value;
+                fetchWeather(currentCity);
+            });
+
+            // 初始載入預設城市天氣
+            fetchWeather(currentCity);
+        }
+
+        document.addEventListener("DOMContentLoaded", initializeApp);
     </script>
 </body>
 
