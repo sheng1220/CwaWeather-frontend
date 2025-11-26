@@ -4,25 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>森森天氣</title>
+    <title>全台天氣</title>
     <link rel="icon" type="image/png" href="./icon-v2.png">
     <link rel="apple-touch-icon" href="./icon-v2.png">
     <link rel="apple-touch-icon" sizes="180x180" href="./icon-v2.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap"
-        rel="stylesheet">
+    <!-- 引入 Noto Sans TC 字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --ac-green: #7DE1A9;
-            --ac-bg-pattern: #8FD8AF;
-            --ac-cream: #FFFEF2;
-            --ac-yellow: #F9F195;
-            --ac-brown: #796452;
-            --ac-blue: #4FB5D9;
-            --ac-dark: #58504A;
-            --ac-card-border: #E6E0C8;
+            /* 極簡文青風格色票 */
+            --primary-color: #005F73;
+            /* 主題色 (深藍綠) */
+            --text-color: #343a40;
+            /* 主要文字顏色 */
+            --text-light: #6c757d;
+            /* 次要文字顏色 */
+            --bg-color: #f8f9fa;
+            /* 淺灰背景 */
+            --card-bg: rgba(255, 255, 255, 0.88);
+            /* 卡片背景 (帶透明度) */
         }
 
         * {
@@ -33,9 +36,9 @@
         }
 
         body {
-            font-family: 'Zen Maru Gothic', sans-serif;
+            font-family: 'Noto Sans TC', sans-serif;
             min-height: 100vh;
-            color: var(--ac-dark);
+            color: var(--text-color);
             overflow-x: hidden;
             padding-bottom: 20px;
             position: relative;
@@ -55,7 +58,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(126, 225, 169, 0.3);
+            background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(3px);
             z-index: -1;
             transition: background 0.8s ease-in-out;
@@ -66,7 +69,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
@@ -76,25 +79,24 @@
         .location-selector-wrapper {
             display: flex;
             align-items: center;
-            background: var(--ac-yellow);
+            background: var(--card-bg);
             border-radius: 20px;
-            transform: rotate(-2deg);
-            border: 2px solid white;
-            box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
-            padding: 10px 10px 10px 25px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 8px 15px;
         }
 
         .location-selector-wrapper span {
             font-size: 2rem;
+            color: var(--primary-color);
         }
 
         #citySelector {
             background: transparent;
             border: none;
-            color: var(--ac-brown);
-            font-weight: 900;
-            font-size: 2.2rem;
-            font-family: 'Zen Maru Gothic', sans-serif;
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+            font-family: 'Noto Sans TC', sans-serif;
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
@@ -103,10 +105,10 @@
         }
 
         .update-pill {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             color: white;
             background: rgba(0, 0, 0, 0.3);
-            padding: 8px 20px;
+            padding: 6px 15px;
             border-radius: 24px;
             backdrop-filter: blur(10px);
         }
@@ -118,15 +120,14 @@
         }
 
         .hero-card {
-            background: rgba(255, 254, 242, 0.95);
-            border-radius: 35px;
+            background: var(--card-bg);
+            border-radius: 25px;
             padding: 30px 25px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 4px solid white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             margin-bottom: 25px;
             position: relative;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
 
         .hero-period {
@@ -134,12 +135,11 @@
             top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--ac-blue);
+            background: var(--primary-color);
             color: white;
             padding: 5px 20px;
             border-radius: 20px;
-            font-weight: bold;
-            border: 3px solid white;
+            font-weight: 500;
             box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
         }
 
@@ -153,8 +153,8 @@
 
         .hero-icon {
             font-size: 5rem;
-            filter: drop-shadow(0 4px 0 rgba(0, 0, 0, 0.1));
-            animation: bounce 3s infinite;
+            color: var(--primary-color);
+            animation: float 4s ease-in-out infinite;
         }
 
         @keyframes bounce {
@@ -166,27 +166,32 @@
             }
         }
 
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
         .hero-temp {
             font-size: 4.5rem;
-            font-weight: 900;
-            color: var(--ac-brown);
+            font-weight: 700;
+            color: var(--text-color);
             line-height: 1;
         }
 
         .hero-desc {
             font-size: 1.5rem;
-            color: #8A7B70;
+            color: var(--text-light);
             margin-bottom: 20px;
-            font-weight: bold;
+            font-weight: 500;
         }
 
         .advice-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px dashed #E0D8C0;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .advice-item {
@@ -194,29 +199,29 @@
             flex-direction: column;
             align-items: center;
             background: rgba(255, 255, 255, 0.6);
-            padding: 10px;
-            border-radius: 20px;
+            padding: 15px 10px;
+            border-radius: 15px;
         }
 
         .advice-icon {
             font-size: 2rem;
             margin-bottom: 5px;
+            color: var(--primary-color);
         }
 
         .advice-text {
             font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--ac-brown);
+            font-weight: 700;
+            color: var(--text-color);
             margin: 5px 0;
             line-height: 1.2;
         }
 
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: white;
             margin-bottom: 15px;
-            margin-left: 10px;
-            font-weight: 900;
+            font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -234,24 +239,24 @@
         }
 
         .mini-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 25px;
+            background: var(--card-bg);
+            border-radius: 20px;
             text-align: center;
-            border: 3px solid white;
             flex-shrink: 0;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 15px 10px;
         }
 
         .mini-time {
-            background: var(--ac-green);
+            background: var(--primary-color);
             color: white;
             padding: 3px 10px;
             border-radius: 12px;
             font-size: 1rem;
             display: inline-block;
             margin-bottom: 10px;
-            font-weight: bold;
+            font-weight: 500;
         }
 
         .mini-icon {
@@ -261,8 +266,8 @@
 
         .mini-temp {
             font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--ac-dark);
+            font-weight: 700;
+            color: var(--text-color);
         }
 
         .loading-screen {
@@ -271,7 +276,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--ac-green);
+            background: var(--primary-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -283,8 +288,8 @@
 
 <body>
     <div id="loading" class="loading-screen">
-        <div style="font-size: 4rem; animation: bounce 2s infinite;">☁️</div>
-        <p style="color: white; font-weight: bold; margin-top: 20px;">正在觀測雲的流動...</p>
+        <div style="font-size: 4rem; animation: float 4s ease-in-out infinite; color: white;">☁️</div>
+        <p style="color: white; font-weight: 500; margin-top: 20px; font-size: 1.2rem;">正在觀測雲的流動...</p>
     </div>
     <div class="status-bar">
         <div class="location-selector-wrapper">
@@ -411,7 +416,7 @@
 
                 scrollContainer.innerHTML += `
                     <div class="mini-card">
-                        <div class="mini-time" style="margin-top: 20px;">${p}</div>
+                        <div class="mini-time">${p}</div>
                         <div class="mini-icon">${getWeatherIcon(f.weather)}</div>
                         <div class="mini-temp">${f.minTemp}° - ${f.maxTemp}°</div>
                         <div style="font-size:0.8rem; color:#888; margin-top:5px;">💧${f.rain}</div>
