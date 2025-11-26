@@ -289,7 +289,7 @@
 <body>
     <div id="loading" class="loading-screen">
         <div style="font-size: 4rem; animation: float 4s ease-in-out infinite; color: white;">☁️</div>
-        <p style="color: white; font-weight: 500; margin-top: 20px; font-size: 1.2rem;">正在觀測雲的流動...</p>
+        <p style="color: white; font-weight: 500; margin-top: 20px; font-size: 1.2rem;">正在聆聽風的訊息...</p>
     </div>
     <div class="status-bar">
         <div class="location-selector-wrapper">
@@ -301,7 +301,7 @@
 
     <div class="container" id="mainContent" style="display: none;">
         <div id="heroCard"></div>
-        <h3 class="section-title">稍後預報</h3>
+        <h3 class="section-title">未來天氣搶先看</h3>
         <div class="scroll-container" id="futureForecasts"></div>
     </div>
 
@@ -341,20 +341,20 @@
 
         function getAdvice(rainProb, maxTemp) {
             let rainIcon = "🌂";
-            let rainText = "不用帶傘";
+            let rainText = "今天免帶傘";
             if (parseInt(rainProb) > 30) {
                 rainIcon = "☂️";
-                rainText = "記得帶傘！";
+                rainText = "帶把傘比較保險";
             }
 
             let clothIcon = "👕";
-            let clothText = "舒適穿搭";
+            let clothText = "今天天氣不錯！";
             if (parseInt(maxTemp) >= 28) {
                 clothIcon = "🎽";
-                clothText = "短袖出發";
+                clothText = "今天適合清涼點";
             } else if (parseInt(maxTemp) <= 20) {
                 clothIcon = "🧥";
-                clothText = "加件外套";
+                clothText = "注意保暖喔";
             }
 
             return { rainIcon, rainText, clothIcon, clothText };
